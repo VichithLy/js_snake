@@ -1,45 +1,54 @@
 window.addEventListener("load", function() {
 
 	//Gestion des niveaux
+		//PS : le copier/coller c'est toujours mal
 	document.getElementById("facile").addEventListener("click", function() {
 		createLevel(1);
-		document.getElementById("game").style.display = "block";
-		document.getElementById("home").style.display = "none";
 	});
 
 	document.getElementById("moyen").addEventListener("click", function() {
 		createLevel(2);
-		document.getElementById("game").style.display = "block";
-		document.getElementById("home").style.display = "none";
 	});
 
 	document.getElementById("difficile").addEventListener("click", function() {
 		createLevel(3);
-		document.getElementById("game").style.display = "block";
-		document.getElementById("home").style.display = "none";
 	});
 
 	// -------------- LECTURE DES FICHIERS JSON ----------//
 	function createLevel(num) {
-    // Création de la requête
-    var ourRequest = new XMLHttpRequest();
-    var url = "levels/level" + num + ".json";
-    // Accès à la requête
-    ourRequest.open("GET", url);
-    // Si requête échoue
-    ourRequest.onerror = function() {
-      console.log("Echec de chargement " + url);
-    };
-    //Au chargement de la page
-    ourRequest.onload = function() {
-      if(ourRequest.status === 200) {
-        //Récupération du contenu du fichier JSON
-        var ourData = JSON.parse(ourRequest.responseText);
-        //Affichage des données JSON
-        getData(ourData);
-      } else {
-        console.log("Erreur " + ourRequest.status);
-      }
+		// Création de la requête
+		var ourRequest = new XMLHttpRequest();
+		var url = "levels/level" + num + ".json";
+		// Accès à la requête
+		ourRequest.open("GET", url);
+		// Si requête échoue
+		ourRequest.onerror = function() {
+		  console.log("Echec de chargement " + url);
+		};
+		
+		//Au chargement de la page
+		ourRequest.onload = function() {
+		  if(ourRequest.status === 200) {
+			//Récupération du contenu du fichier JSON
+			var ourData = JSON.parse(ourRequest.responseText);
+			//Affichage des données JSON
+			getData(ourData);
+			
+			//-- TOUT CREER ICI --//
+				//Gestion de la vitesse du snake
+			document.getElementById("game").style.display = "block";
+			document.getElementById("home").style.display = "none";
+			console.log(delay);
+
+			setInterval(function(){
+				console.log(delay);
+				moveSnake();
+			}, delay);
+			
+		} else {
+		console.log("Erreur " + ourRequest.status);
+		}
+	
     };
     ourRequest.send();
   }
@@ -61,14 +70,14 @@ window.addEventListener("load", function() {
 		  data.fruit[i];
 		}
 
-    //Dimensions
-    data.dimensions;
+		//Dimensions
+		data.dimensions;
 
 		//Délai
 		delay = data.delay;
-		console.log(delay);
+		//console.log(delay);
 
-  }
+	}
 
 	// ------------------- CONSTANTES --------------- //
 	const BOX = 20; //Une case du serpent
@@ -81,7 +90,7 @@ window.addEventListener("load", function() {
 	//31 pour compter les parrois du monde
 
 	// -------------- VARIABLES ------- //
-	var delay = 100;
+	var delay;
 	var canvas;
 	var ctx;
 	var d = "stop";
@@ -90,7 +99,7 @@ window.addEventListener("load", function() {
 		//MONDE SNAKE
 	var world = [];
 
-			//Matrice remplie de 0
+			//Matrice remplie de 1
 				//-1 pour compter les parrois du monde
 	for (var y = -1; y < HEIGHT; y++) {
 		world[y] = [];
@@ -130,8 +139,8 @@ window.addEventListener("load", function() {
 	createFruit();
 
 	//MURS
-	/*world[1][1] = MUR;
-	world[5][5] = MUR;*/
+	world[1][1] = MUR;
+	world[5][5] = MUR;
 
 
 	// ------------------------ CANVAS ------------------ //
@@ -244,7 +253,7 @@ window.addEventListener("load", function() {
 			//Nouvelle tête du serpent
 			var newHead;
 
-			// -------------- DIRETIONS DU SERPENT ------------- //
+			// -------------- DIRECTIONS DU SERPENT ------------- //
 			switch (d) {
 				case "right":
 					newHead = {y: snakeY+1,x: snakeX};
@@ -278,7 +287,6 @@ window.addEventListener("load", function() {
 				}
 			}
 
-
 				//Si le serpent rencontre un fruit
 			if(world[newHead.x][newHead.y] == FRUIT) {
 				console.log()
@@ -306,14 +314,14 @@ window.addEventListener("load", function() {
 				//console.log(newHead);
 
 			}
-
-
+			
+			// Si le serpent se mange lui-même : PROBLEME NON RESOLU
 			if(world[newHead.y][newHead.x] == SERPENT) {
 				//console.log("je me mange");
 				//console.log(world.join('\n'));
 			}
 
-			console.log(world[newHead.y][newHead.x]);
+			//console.log(world[newHead.y][newHead.x]);
 			//console.log(world.join('\n'));
 
 
@@ -325,22 +333,11 @@ window.addEventListener("load", function() {
 
 		}
 
-		/*for(var ligne = 0; ligne < world.length; ligne++) {
-			for(var pixel = 0; pixel < world.length; pixel++) {
-
-			}
-		}*/
-
 		//Recréation du canvas
 		createCanvas();
 
 	}
-
-
-	setInterval(function(){
-		console.log(delay);
-		moveSnake();
-	}, delay);
+	
 
 
 });
