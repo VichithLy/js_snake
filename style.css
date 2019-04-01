@@ -1,0 +1,41 @@
+body {
+  background: orange;
+  font-family: Sayan;
+  text-align: center;
+}
+
+.title {
+  color: #0f48c2;
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.level {
+  font-size: 30px;
+}
+
+.score {
+  font-size: 30px;
+}
+
+button {
+  width : 90px;
+  background: white;
+  border : 2px solid black;
+}
+
+#canvas {
+  border : 20px solid #d5c9c7;
+  margin-top: 10px;
+  background: green;
+  box-shadow: 6px 6px 0px black;
+}
+
+.game {
+  margin-top: 0px;
+}
+
+@font-face {
+  font-family: Sayan;
+  src: url(Saiyan-Sans.ttf);
+}

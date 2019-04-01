@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Dragon Ball Snake </title>
+  </head>
+  <body>
+
+    <main>
+      <div id="description"></div>
+
+      <div id="liens">
+
+      </div>
+    </main>
+
+    <div class="title">Dragon Ball Znake <img id="dragonball" width="50" height="50" src="dragonball.png" alt="dragonball"></div>
+
+    <!-- Ecran d'accueil -->
+    <div id="home">
+      <div class="level"><strong>Choisissez votre niveau : </strong></div>
+      <button id="facile" type="button" name="button">Facile</button>
+      <button id="moyen" type="button" name="button">Moyen</button>
+      <button id="difficile" type="button" name="button">Difficile</button>
+    </div>
+
+    <!-- Jeu -->
+    <div id="game" style="display: none;">
+      <div class="divScore">
+      </span><span class="score">Boules de cristal : </span> <strong><span class="score" id="number">0</span> </strong>
+        <span id="shenron" style="visibility: hidden;"><img id="dragonball" width="100"  src="shenron.png" alt="dragonball">
+      </div>
+
+
+      <div>
+        <canvas id="canvas" width="600" height="600"></canvas>
+      </div>
+    </div>
+
+
+  </body>
+
+  <script src="main.js"></script>
+</html>
