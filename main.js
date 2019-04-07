@@ -25,59 +25,69 @@ window.addEventListener("load", function() {
 		ourRequest.onerror = function() {
 		  console.log("Echec de chargement " + url);
 		};
-		
+
 		//Au chargement de la page
 		ourRequest.onload = function() {
-		  if(ourRequest.status === 200) {
-			//Récupération du contenu du fichier JSON
-			var ourData = JSON.parse(ourRequest.responseText);
-			//Affichage des données JSON
-			getData(ourData);
-			
-			//-- TOUT CREER ICI --//
-				//Gestion de la vitesse du snake
-			document.getElementById("game").style.display = "block";
-			document.getElementById("home").style.display = "none";
-			console.log(delay);
 
-			setInterval(function(){
-				console.log(delay);
-				moveSnake();
-			}, delay);
-			
-		} else {
-		console.log("Erreur " + ourRequest.status);
-		}
-	
+		  if(ourRequest.status === 200) {
+				//Récupération du contenu du fichier JSON
+				var ourData = JSON.parse(ourRequest.responseText);
+
+				//-- TOUT CREER ICI --//
+
+				/*
+					//Dimension du monde : CHANGEMENT DE DIMENSION NON IMPLEMENTE
+				for (var i in ourData.dimensions) {
+					console.log(i);
+					worldX = ourData.dimensions[i][0];
+					worldY = ourData.dimensions[i][1];
+
+					//console.log(data.walls[4][0]);
+				}
+				*/
+
+					//Ajout du fruit
+				for (var i in ourData.fruit) {
+					console.log(i);
+					fruitX = ourData.fruit[0][0];
+
+					fruitY= ourData.fruit[0][1];
+
+					world[fruitY][fruitX] = FRUIT;
+					//console.log("x" + fruitX);
+					//console.log("y" + fruitY);
+					//console.log(data.walls[4][0]);
+				}
+
+					//Ajout des murs
+				for (var i in ourData.walls) {
+					murX = ourData.walls[i][0];
+					murY = ourData.walls[i][1];
+					world[murY][murX] = MUR;
+
+					console.log("x" + murX);
+					console.log("y" + murY);
+
+					//console.log(data.walls[4][0]);
+				}
+
+					//Gestion de la vitesse du snake
+				document.getElementById("game").style.display = "block";
+				document.getElementById("home").style.display = "none";
+
+				delay = ourData.delay;
+
+				setInterval(function(){
+					moveSnake();
+				}, delay);
+
+			} else {
+				console.log("Erreur " + ourRequest.status);
+			}
+
     };
     ourRequest.send();
   }
-
-	function getData(data) {
-
-		//Murs
-		for (var i in data.walls) {
-		  //var html = "<p>" + data.walls[i] + "</p>"
-			//linksContainer.insertAdjacentHTML('beforeend', html);
-
-		  for (var j = 0; j < 2; j++) {
-				data.walls[i][j];
-		  }
-		}
-
-		//Fruits
-		for (var i in data.fruit) {
-		  data.fruit[i];
-		}
-
-		//Dimensions
-		data.dimensions;
-
-		//Délai
-		delay = data.delay;
-		//console.log(delay);
-
-	}
 
 	// ------------------- CONSTANTES --------------- //
 	const BOX = 20; //Une case du serpent
@@ -95,10 +105,15 @@ window.addEventListener("load", function() {
 	var ctx;
 	var d = "stop";
 	var score = 0;
+	var murX;
+	var murY;
+	var fruitX;
+	var fruitY;
+	var worldX;
+	var worldY;
 
 		//MONDE SNAKE
 	var world = [];
-
 			//Matrice remplie de 1
 				//-1 pour compter les parrois du monde
 	for (var y = -1; y < HEIGHT; y++) {
@@ -136,12 +151,7 @@ window.addEventListener("load", function() {
 		world[posFruitX][posFruitY] = FRUIT;
 	}
 
-	createFruit();
-
-	//MURS
-	world[1][1] = MUR;
-	world[5][5] = MUR;
-
+	//createFruit();
 
 	// ------------------------ CANVAS ------------------ //
 	function createCanvas() {
@@ -233,11 +243,9 @@ window.addEventListener("load", function() {
 
 	//--------------------- DEPLACEMENTS DU SERPENT  ----------------//
 	function moveSnake() {
-
+		console.log(world.join('\n'));
 		//SCORE
-		if (score == 7) {
-			console.log("afficher le dragon");
-			/*document.getElementById("shenron").style.visibility = "visible";*/
+		if (score == 7) { //Clignottement du dragon à partir de 7
 			setInterval(function() {
 						document.getElementById("shenron").style.visibility = (document.getElementById("shenron").style.visibility == 'hidden' ? 'visible' : 'hidden');
 			}, 1000);
@@ -289,7 +297,6 @@ window.addEventListener("load", function() {
 
 				//Si le serpent rencontre un fruit
 			if(world[newHead.x][newHead.y] == FRUIT) {
-				console.log()
 				score++; //On incrémente le score
 				document.getElementById("number").textContent = score; //On affiche le score
 				snake.push(newHead); //Le serpent grandit
@@ -304,31 +311,22 @@ window.addEventListener("load", function() {
 
 			} else { //Si le serpent ne rencontre rien
 
-				//console.log("Se mange lui même ? " + newHead.x == SERPENT);
-				//console.log("Se prend le mur ? " + newHead.y == -1);
 				snake.push(newHead);
 				snake.shift();
-				//console.log(world[newHead.y][newHead.x]);
-				//console.log(newHead.x);
-				//console.log(newHead.y);
-				//console.log(newHead);
 
 			}
-			
+
+			//console.log("Se mange lui même ? " + newHead.x == SERPENT);
+
 			// Si le serpent se mange lui-même : PROBLEME NON RESOLU
 			if(world[newHead.y][newHead.x] == SERPENT) {
-				//console.log("je me mange");
-				//console.log(world.join('\n'));
+
+
 			}
-
-			//console.log(world[newHead.y][newHead.x]);
-			//console.log(world.join('\n'));
-
 
 			//Parcours du serpent pour l'ajouter dans le monde
 			snake.forEach(function(ligne) {
 				world[ligne.x][ligne.y] = SERPENT;
-				//console.log(world.join('\n'));
 			});
 
 		}
@@ -337,7 +335,7 @@ window.addEventListener("load", function() {
 		createCanvas();
 
 	}
-	
+
 
 
 });
